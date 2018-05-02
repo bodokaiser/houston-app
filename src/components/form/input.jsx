@@ -11,11 +11,12 @@ export const TextInput = (props) => (
   <Control.text updateOn="blur" mapProps={{ className: classNameControl }} {...props} />
 )
 
-export const QuantityInput = ({ sourceUnit, targetUnit }) => (
-  <Control
+export const QuantityInput = ({ sourceUnit, targetUnit, model }) => (
+  <Control.text
+    model={model}
     mapProps={{
       value: p => {
-        console.log('quantity value', p)
+        console.log('quantity value', p, model)
         convert(p.modelValue, sourceUnit).toString(targetUnit)
       },
       className: classNameControl,
