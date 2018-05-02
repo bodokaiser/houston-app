@@ -3,21 +3,20 @@ import React, {
 } from 'react'
 import {
   LocalForm,
-  Fieldset
+  Fieldset,
+  actions
 } from 'react-redux-form'
 import {connect} from 'react-redux'
+
+import {
+  isEmpty,
+  isDecimal
+} from 'validator'
 
 import {
   updateDevice,
   submitDevice
 } from '../actions/device'
-
-import {
-  modes,
-  required,
-  quantity,
-  quantities
-} from '../validators/device'
 
 import {
   InputGroup,
@@ -37,47 +36,43 @@ import {
   CollapsableCard
 } from '../components/card'
 
-const ConstGroup = ({ append, parser, formatter }) => (
+const ConstGroup = ({ sourceUnit, defaultUnit }) => (
   <Fieldset model=".const">
     <div className="row align-items-center">
       <div className="col">
         <QuantityGroup
           model=".value"
-          append={append}
-          validators={{
-            required: required()
-          }} />
+          sourceUnit={sourceUnit}
+          defaultUnit={defaultUnit}
+          validators={{ required, quantity }} />
       </div>
     </div>
   </Fieldset>
 )
 
-const SweepGroup = ({ append }) => (
+const SweepGroup = ({ sourceUnit, defaultUnit }) => (
   <Fieldset model=".sweep">
     <div className="row gutters-xs">
       <div className="col-4">
-        <InputGroup
+        <QuantityGroup
           model=".start"
-          append={append}
-          validators={{
-            required: required()
-          }} />
+          sourceUnit={sourceUnit}
+          defaultUnit={defaultUnit}
+          validators={{ required, quantity }} />
       </div>
       <div className="col-4">
-        <InputGroup
+        <QuantityGroup
           model=".stop"
-          append={append}
-          validators={{
-            required: required()
-          }} />
+          sourceUnit={sourceUnit}
+          defaultUnit={defaultUnit}
+          validators={{ required, quantity }} />
       </div>
       <div className="col-4">
-        <InputGroup
+        <QuantityGroup
           model=".duration"
-          append="ms"
-          validators={{
-            required: required()
-          }} />
+          sourceUnit="s"
+          defaultUnit="ms"
+          validators={{ required, quantity }} />
       </div>
     </div>
     <div className="mt-3">
@@ -87,23 +82,20 @@ const SweepGroup = ({ append }) => (
   </Fieldset>
 )
 
-const PlaybackGroup = ({ fromUnit, toUnit }) => (
+const PlaybackGroup = ({ sourceUnit, defaultUnit }) => (
   <Fieldset model=".playback">
     <div className="row gutters-xs">
       <div className="col-7">
         <InputGroup
           model=".data"
-          validators={{
-            required: required()
-          }}
-        />
+          validators={{ required }} />
       </div>
       <div className="col-5">
-        <InputGroup
+        <QuantityGroup
           model=".interval"
-          validators={{
-            required: required()
-          }} />
+          sourceUnit="s"
+          defaultUnit="ns"
+          validators={{ required, quantity }} />
       </div>
     </div>
     <div className="mt-3">
@@ -135,7 +127,6 @@ class Device extends Component {
 
   handleChange(device) {
     if (this.state.form && this.state.form.$form.valid) {
-      console.log('change device', device, this.state)
       this.props.dispatch(updateDevice(device))
     }
   }
@@ -172,13 +163,11 @@ class Device extends Component {
                   <Fieldset model=".amplitude">
                     <ModeGroup />
                     { device.amplitude.mode == 'const' &&
-                    <ConstGroup
-                      append="%"
-                    /> }
+                    <ConstGroup sourceUnit="" defaultUnit="%" /> }
                     { device.amplitude.mode == 'sweep' &&
-                    <SweepGroup fromUnit="" toUnit="%" /> }
+                    <SweepGroup sourceUnit="" defaultUnit="%" /> }
                     { device.amplitude.mode == 'playback' &&
-                    <PlaybackGroup fromUnit="" toUnit="%" /> }
+                    <PlaybackGroup sourceUnit="" defaultUnit="%" /> }
                   </Fieldset>
                 </div>
                 <div className="form-group col-sm-12">
@@ -188,13 +177,11 @@ class Device extends Component {
                   <Fieldset model=".frequency">
                     <ModeGroup />
                     { device.frequency.mode == 'const' &&
-                    <ConstGroup
-                      append="MHz"
-                    /> }
+                    <ConstGroup sourceUnit="Hz" defaultUnit="MHz" /> }
                     { device.frequency.mode == 'sweep' &&
-                    <SweepGroup fromUnit="Hz" toUnit="MHz" /> }
+                    <SweepGroup sourceUnit="Hz" defaultUnit="MHz" /> }
                     { device.frequency.mode == 'playback' &&
-                    <PlaybackGroup fromUnit="Hz" toUnit="MHz" /> }
+                    <PlaybackGroup sourceUnit="Hz" defaultUnit="MHz" /> }
                   </Fieldset>
                 </div>
                 <div className="form-group col-sm-12">
@@ -204,9 +191,9 @@ class Device extends Component {
                   <Fieldset model=".phase">
                     <ModeGroup />
                     { device.phase.mode == 'const' &&
-                    <ConstGroup sourceUnit="rad" targetUnit="rad" /> }
+                    <ConstGroup sourceUnit="rad" defaultUnit="rad" /> }
                     { device.phase.mode == 'sweep' &&
-                    <SweepGroup fromUnit="rad" toUnit="rad" /> }
+                    <SweepGroup sourceUnit="rad" defaultUnit="rad" /> }
                     { device.phase.mode == 'playback' &&
                     <PlaybackGroup /> }
                   </Fieldset>
@@ -231,3 +218,35 @@ class Device extends Component {
 }
 
 export default connect()(Device)
+
+function modes() {
+  return function(device) {
+    var [nc, ns, np] = [0, 0, 0]
+
+    var modes = [
+      device.amplitude.mode,
+      device.frequency.mode,
+      device.phase.mode
+    ]
+    modes.forEach(m => {
+      if (m == 'const') nc++
+      if (m == 'sweep') ns++
+      if (m == 'playback') np++
+    })
+
+    return np < 2 && ns < 2
+  }
+}
+
+function required(value) {
+  if (typeof value == 'string') return !isEmpty(value)
+
+  if (value === undefined) return false
+  if (value === null) return false
+
+  return true
+}
+
+function quantity(value) {
+  return value !== null && typeof value !== Number
+}

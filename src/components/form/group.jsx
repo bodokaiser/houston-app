@@ -35,7 +35,7 @@ export const InputGroup = ({ model, label, prepend, append, value, parser, valid
   </Fragment>
 )
 
-export const QuantityGroup = ({ model, label, validators, sourceUnit, targetUnit }) => (
+export const QuantityGroup = ({ model, label, validators, sourceUnit, defaultUnit }) => (
   <Fragment>
     { label &&
     <label className="form-label" htmlFor={model}>
@@ -44,7 +44,7 @@ export const QuantityGroup = ({ model, label, validators, sourceUnit, targetUnit
     <QuantityInput
       model={model}
       sourceUnit={sourceUnit}
-      targetUnit={targetUnit}
+      defaultUnit={defaultUnit}
       validators={validators} />
     <InvalidFeedback model={model} />
   </Fragment>

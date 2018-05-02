@@ -1,6 +1,7 @@
-import React from 'react'
-import {Control} from 'react-redux-form'
-import convert from 'js-quantities'
+import React, { Component } from 'react'
+import { Control, actions } from 'react-redux-form'
+
+import Quantity from './quantity'
 
 const classNameRange = classNameMapper('form-control custom-range')
 const classNameSelect = classNameMapper('selectgroup-input')
@@ -8,27 +9,20 @@ const classNameCustom = classNameMapper('custom-control-input')
 const classNameControl = classNameMapper('form-control')
 
 export const TextInput = (props) => (
-  <Control.text updateOn="blur" mapProps={{ className: classNameControl }} {...props} />
+  <Control.text mapProps={{ className: classNameControl }} {...props} />
 )
 
-export const QuantityInput = ({ sourceUnit, targetUnit, model }) => (
-  <Control.text
+export const QuantityInput = ({ model, validators, sourceUnit, defaultUnit }) => (
+  <Control
     model={model}
     mapProps={{
-      value: p => {
-        console.log('quantity value', p, model)
-        convert(p.modelValue, sourceUnit).toString(targetUnit)
-      },
-      className: classNameControl,
-      onChange: p => {
-        return e => {
-          var value = convert(e.target.value).to(targetUnit).scalar
-          console.log('value on change', value)
-
-          p.onChange(value)
-        }
-      }
-    }} />
+      onError: errorHandler,
+      className: classNameControl
+    }}
+    validators={validators}
+    sourceUnit={sourceUnit}
+    defaultUnit={defaultUnit}
+    component={Quantity} />
 )
 
 export const RangeInput = (props) => (
@@ -44,11 +38,17 @@ export const CheckboxInput = (props) => (
 )
 
 function classNameMapper(str) {
-  return function mapClassName(form) {
-    if (!form.fieldValue.valid) {
+  return function mapClassName({ fieldValue }) {
+    if (!fieldValue.valid) {
       return `${str} is-invalid`
     }
 
     return str
+  }
+}
+
+function errorHandler({ model, dispatch }) {
+  return function handlerError(error) {
+    dispatch(actions.setValidity(model, { quantity: false }))
   }
 }
