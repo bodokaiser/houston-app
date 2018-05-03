@@ -8,6 +8,8 @@ module.exports = merge(config, {
   mode: 'production',
   entry: './src/index.jsx',
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'production'
+    })
   ],
 })
