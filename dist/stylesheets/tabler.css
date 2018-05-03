@@ -47,6 +47,29 @@ Dashboard UI
   box-sizing: border-box;
 }
 
+.ReactModal__Content {
+  opacity: 0;
+}
+
+.ReactModal__Content--after-open {
+  opacity: 1;
+  transition: opacity 800ms;
+}
+
+.ReactModal__Content--before-close {
+  opacity: 0;
+}
+
+.fade-enter {
+  opacity: 0;
+  z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 250ms ease-in;
+}
+
 html {
   font-family: sans-serif;
   line-height: 1.15;

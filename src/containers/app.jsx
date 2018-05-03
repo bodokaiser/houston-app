@@ -1,12 +1,6 @@
-import React, {
-  Component,
-  Fragment
-} from 'react'
-import {
-  Route,
-  Switch,
-  withRouter
-} from 'react-router-dom'
+import React, { Component, Fragment } from 'react'
+import { Route, BrowserRouter, Switch, withRouter } from 'react-router-dom'
+import { TransitionGroup, CSSTransition } from "react-transition-group"
 import {connect} from 'react-redux'
 import Modal from 'react-modal'
 import KeyHandler, {KEYPRESS} from 'react-key-handler';
@@ -57,38 +51,44 @@ class App extends Component {
     const { devices, metrics } = this.props
 
     return (
-      <Fragment>
-        <Navbar />
-        <Notification theme={NotificationTheme} />
-        <KeyHandler keyEventName={KEYPRESS} keyValue="ä" onKeyHandle={this.handleKeypress} />
-        <div className="container mt-5">
-          <Switch>
-            <Route path="/" exact render={() => (
-              <Page title="Dashboard">
-                <div className="row row-cards">
-                  {metrics.map((metric, index) => (
-                    <div className="col-6 col-sm-4 col-lg-2" key={index}>
-                      <SimpleCard {...metric} />
-                    </div>
-                  ))}
-                </div>
-              </Page>
-            )} />
-            <Route path="/devices" render={() => (
-              <Page title="Devices">
-                <div className="row">
-                {devices.map((device, index) => (
-                  <div className="col-8 offset-2 col-sm-6 offset-sm-0 col-md-5 col-lg-4 col-xl-3" key={index}>
-                    <Device key={index} device={device} />
-                  </div>
-                ))}
-                </div>
-              </Page>
-            )} />
-            <Route component={PageNotFound}  />
-          </Switch>
-        </div>
-      </Fragment>
+      <BrowserRouter>
+        <Fragment>
+          <Navbar />
+          <Notification theme={NotificationTheme} />
+          <KeyHandler keyEventName={KEYPRESS} keyValue="ä" onKeyHandle={this.handleKeypress} />
+          <Route render={({ location }) => (
+            <TransitionGroup className="container mt-5">
+              <CSSTransition key={location.key} classNames="fade" timeout={300}>
+                  <Switch location={location}>
+                    <Route path="/" exact render={() => (
+                      <Page title="Dashboard">
+                        <div className="row row-cards">
+                          {metrics.map((metric, index) => (
+                            <div className="col-6 col-sm-4 col-lg-2" key={index}>
+                              <SimpleCard {...metric} />
+                            </div>
+                          ))}
+                        </div>
+                      </Page>
+                    )} />
+                    <Route path="/devices" render={() => (
+                      <Page title="Devices">
+                        <div className="row">
+                        {devices.map((device, index) => (
+                          <div className="col-8 offset-2 col-sm-6 offset-sm-0 col-md-5 col-lg-4 col-xl-3" key={index}>
+                            <Device key={index} device={device} />
+                          </div>
+                        ))}
+                        </div>
+                      </Page>
+                    )} />
+                    <Route component={PageNotFound}  />
+                  </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          )} />
+        </Fragment>
+      </BrowserRouter>
     )
   }
 

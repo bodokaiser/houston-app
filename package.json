@@ -18,6 +18,7 @@
     "react-redux": "^5.0.7",
     "react-redux-form": "^1.16.8",
     "react-router-dom": "^4.2.2",
+    "react-transition-group": "^2.3.1",
     "reapop": "^1.2.0",
     "reapop-theme-bootstrap": "^1.0.1",
     "redux": "^4.0.0",
