@@ -2,10 +2,6 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  entry: [
-    'react-hot-loader/patch',
-    './src/index.jsx'
-  ],
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'javascripts/build.js'
@@ -21,13 +17,5 @@ module.exports = {
   },
   resolve: {
     extensions: ['*', '.js', '.jsx']
-  },
-  devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    historyApiFallback: true,
-    hot: true
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  }
 }
