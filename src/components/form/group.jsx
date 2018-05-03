@@ -10,7 +10,7 @@ import {
   InvalidFeedback
 } from './feedback'
 
-export const InputGroup = ({ model, label, prepend, append, value, parser, validators, messages, formatter }) => (
+export const InputGroup = ({ model, label, prepend, append, value, parser, validators, messages, formatter, updateOn }) => (
   <Fragment>
     { label &&
     <label className="form-label" htmlFor={model}>
@@ -25,6 +25,7 @@ export const InputGroup = ({ model, label, prepend, append, value, parser, valid
         model={model}
         parser={parser}
         formatter={formatter}
+        updateOn={updateOn}
         validators={validators} />
       <InvalidFeedback model={model} />
       { append &&

@@ -3,7 +3,7 @@ import { LocalForm, Fieldset, actions } from 'react-redux-form'
 import {connect} from 'react-redux'
 import { isEmpty, isDecimal } from 'validator'
 
-import { updateDevice, submitDevice } from '../actions/device'
+import { updateDevice, submitDevice, resetDevice } from '../actions/device'
 
 import {
   InputGroup,
@@ -62,12 +62,22 @@ const SweepGroup = ({ sourceUnit, defaultUnit }) => (
   </Fieldset>
 )
 
+function parseList(value) {
+  if (Array.isArray(value)) {
+    return value.join(', ')
+  }
+
+  return value
+}
+
 const PlaybackGroup = ({ sourceUnit, defaultUnit }) => (
   <Fieldset model=".playback">
     <div className="row gutters-xs">
       <div className="col-7">
         <InputGroup
           model=".data"
+          parser={parseList}
+          updateOn="blur"
           validators={{ required }} />
       </div>
       <div className="col-5">
@@ -111,6 +121,7 @@ class Device extends Component {
 
     this.state = { showModal: false }
     this.handleEdit = this.handleEdit.bind(this)
+    this.handleReset = this.handleReset.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
@@ -122,7 +133,6 @@ class Device extends Component {
   }
 
   handleModalClose() {
-    console.log('modal close')
     this.setState({ showModal: false })
   }
 
@@ -137,8 +147,11 @@ class Device extends Component {
   }
 
   handleUpdate(form) {
-    console.log('update', form)
     this.setState({ form })
+  }
+
+  handleReset() {
+    this.props.dispatch(resetDevice(this.props.device))
   }
 
   render() {
@@ -209,7 +222,7 @@ class Device extends Component {
           </div>
           <div className="card-footer text-right">
             <div className="d-flex">
-              <button type="button" className="btn btn-outline-secondary">
+              <button type="button" className="btn btn-outline-secondary" onClick={this.handleReset}>
                 Reset
               </button>
               <SubmitButton className="ml-auto" model="local">

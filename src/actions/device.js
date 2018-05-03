@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { notify } from 'reapop'
 
 export const UPDATE_DEVICE = 'UPDATE_DEVICE'
 export const REQUEST_DEVICE_LIST = 'REQUEST_DEVICE_LIST'
@@ -30,14 +31,36 @@ export function receiveDeviceUpdate() {
   return { type: RECEIVE_DEVICE_UPDATE, isUpdating: false }
 }
 
+export function resetDevice(device) {
+  return dispatch => {
+    console.log('reset', device)
+
+    return axios.delete(`/devices/dds/${device.id}`)
+      .then(res => {
+        dispatch(notify({
+          title: `Reset ${device.name}`,
+          message: 'Device reset was successful',
+          status: res.status,
+          dismissible: true,
+          dismissAfter: 3000
+        }))
+      })
+      .catch(err => {
+        dispatch(notify({
+          title: `Reset ${device.name}`,
+          message: `Device went wrong. ${err.message}`,
+          status: 'error',
+          dismissible: true,
+          dismissAfter: 3000
+        }))
+      })
+  }
+}
+
 export function submitDevice(device) {
   return dispatch => {
     dispatch(requestDeviceUpdate(device))
 
-
-    console.log('submit', device)
-
-    return
     return axios.put(`/devices/dds/${device.id}`, {
         id: device.id,
         name: device.name,
@@ -46,9 +69,22 @@ export function submitDevice(device) {
         phase: device.phase
       }, { baseURL: process.env.RESOURCE })
       .then(res => {
-        setTimeout(() => {
-          dispatch(receiveDeviceUpdate())
-        }, 3000)
+        dispatch(notify({
+          title: `Updated ${device.name}`,
+          message: 'Device update was successful',
+          status: res.status,
+          dismissible: true,
+          dismissAfter: 3000
+        }))
+      })
+      .catch(err => {
+        dispatch(notify({
+          title: `Reset ${device.name}`,
+          message: `Device went wrong. ${err.message}`,
+          status: 'error',
+          dismissible: true,
+          dismissAfter: 3000
+        }))
       })
   }
 }
