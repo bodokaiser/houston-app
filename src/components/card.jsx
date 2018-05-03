@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 export const SimpleCard = ({ name, value }) => (
   <div className="card">
@@ -9,22 +9,48 @@ export const SimpleCard = ({ name, value }) => (
   </div>
 )
 
-export const CollapsableCard = ({ title, alert, children }) => (
-  <div className="card">
-    <div className="card-status bg-blue"></div>
-    <div className="card-header">
-      <h3 className="card-title">{title}</h3>
-      <div className="card-options">
-        <span className="card-options-collapse">
-          <i className="fe fe-edit-2 mr-2"></i>
-          <i className="fe fe-chevron-up"></i>
-        </span>
+export class CollapsableCard extends Component {
+
+  constructor() {
+    super()
+
+    this.state = { collapsed: false }
+    this.toggleCollapse = this.toggleCollapse.bind(this)
+  }
+
+  toggleCollapse() {
+    const { collapsed } = this.state
+
+    this.setState({ collapsed: !collapsed })
+  }
+
+  render() {
+    const { collapsed } = this.state
+    const { title, alert, children } = this.props
+
+    return (
+      <div className={`card ${(collapsed) ? 'card-collapsed' : ''}`}>
+        <div className="card-status bg-blue"></div>
+        <div className="card-header">
+          <h3 className="card-title">{title}</h3>
+          <div className="card-options">
+            <button className="btn btn-sm" type="click">
+              <i className="fe fe-edit-2"></i>
+            </button>
+            <span className="card-options-collapse">
+              <button className="btn btn-sm" type="click" onClick={this.toggleCollapse}>
+                <i className={`fe fe-chevron-${(collapsed) ? 'down' : 'up'}`}></i>
+              </button>
+            </span>
+          </div>
+        </div>
+        { alert &&
+        <div className="card-alert alert alert-danger mb-0">
+          { alert }
+        </div> }
+        { children }
       </div>
-    </div>
-    { alert &&
-    <div className="card-alert alert alert-danger mb-0">
-      { alert }
-    </div> }
-    { children }
-  </div>
-)
+    )
+  }
+
+}
