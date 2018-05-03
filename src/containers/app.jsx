@@ -9,6 +9,9 @@ import {
 } from 'react-router-dom'
 import {connect} from 'react-redux'
 import Modal from 'react-modal'
+import KeyHandler, {KEYPRESS} from 'react-key-handler';
+import Notification, { notify } from 'reapop'
+import NotificationTheme from 'reapop-theme-bootstrap'
 
 import Device from './device'
 
@@ -27,8 +30,27 @@ import {fetchDevicesLazy} from '../actions/device'
 
 class App extends Component {
 
-  componentDidMount() {
-    //this.props.dispatch(fetchDevicesLazy())
+  constructor() {
+    super()
+
+    this.handleKeypress = this.handleKeypress.bind(this)
+  }
+
+  handleKeypress(e) {
+    if (e.key == 'ä') {
+      this.props.dispatch(notify({
+        title: 'Hey There!',
+        message: [
+          'You are looking great today!',
+          'That nobel price is yours!',
+          'I can see you on the nature magazine cover!',
+          'You are a superposition of awesome and great!'
+        ][Math.floor(Math.random()*4)],
+        status: 'success',
+        dismissible: true,
+        dismissAfter: 3000
+      }))
+    }
   }
 
   render() {
@@ -37,6 +59,8 @@ class App extends Component {
     return (
       <Fragment>
         <Navbar />
+        <Notification theme={NotificationTheme} />
+        <KeyHandler keyEventName={KEYPRESS} keyValue="ä" onKeyHandle={this.handleKeypress} />
         <div className="container mt-5">
           <Switch>
             <Route path="/" exact render={() => (
