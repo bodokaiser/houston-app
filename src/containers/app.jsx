@@ -12,13 +12,15 @@ import {connect} from 'react-redux'
 import Device from './device'
 
 import {
-  Header,
   Page,
   PageNotFound
 } from '../components/layout'
 import {
   SimpleCard
 } from '../components/card'
+import {
+  Navbar
+} from '../components/nav'
 
 import {fetchDevicesLazy} from '../actions/device'
 
@@ -33,7 +35,7 @@ class App extends Component {
 
     return (
       <Fragment>
-        <Header />
+        <Navbar />
         <div className="container mt-5">
           <Switch>
             <Route path="/" exact render={() => (

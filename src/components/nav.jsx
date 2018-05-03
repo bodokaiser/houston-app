@@ -1,29 +1,29 @@
 import React from 'react'
+import {NavLink} from 'react-router-dom'
 
-export const Navbar = ({ title, children }) => {
-  return (
-    <nav className="navbar sticky-top">
-      <a className="navbar-brand" href="/">{ title }</a>
-      { children }
-    </nav>
-  )
-}
-
-
-export const NavTabs = ({ links, onClick }) => (
-  <ul className="nav nav-tabs mb-3">
-    {links.map((link, index) => (
-      <li className="nav-item" key={index}>
-        <a className={`nav-link ${link.active ? 'active' : ''}`}
-           href={link.href || '/'}
-           onClick={e => {
-             e.preventDefault()
-
-             onClick(link.name, e)
-           }}>
-          {link.name}
+export const Navbar = () => (
+  <nav className="navbar navbar-expand bg-light pt-0 pb-0">
+    <ul className="nav nav-tabs border-0">
+      <li className="nav-item">
+        <NavLink className="nav-link" activeClassName="active" exact to="/">
+          <i className="fe fe-home"></i> Home
+        </NavLink>
+      </li>
+      <li className="nav-item">
+        <NavLink className="nav-link" activeClassName="active" to="/devices">
+          <i className="fe fe-cpu"></i> Devices
+        </NavLink>
+      </li>
+      <li className="nav-item">
+        <a className="nav-link" href="https://github.com/bodokaiser/houston">
+          <i className="fe fe-github"></i> Source
         </a>
       </li>
-    ))}
-  </ul>
+      <li className="nav-item">
+        <a className="nav-link" href="https://godoc.org/github.com/bodokaiser/houston">
+          <i className="fe fe-file-text"></i> Documentation
+        </a>
+      </li>
+    </ul>
+  </nav>
 )

@@ -1,5 +1,4 @@
 import React from 'react'
-import {NavLink} from 'react-router-dom'
 
 export const Page = ({ children, title }) => (
   <section>
@@ -28,37 +27,4 @@ export const PageError = ({ code }) => (
 
 export const PageNotFound = () => (
   <PageError code={404} />
-)
-
-export const Header = () => (
-  <header className="header collapse d-lg-flex p-0">
-    <div className="container">
-      <div className="row align-items-center">
-        <div className="col-lg order-lg-first">
-          <ul className="nav nav-tabs border-0 flex-column flex-lg-row">
-            <li className="nav-item">
-              <NavLink className="nav-link" activeClassName="active" exact to="/">
-                <i className="fe fe-home"></i> Home
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" activeClassName="active" to="/devices">
-                <i className="fe fe-cpu"></i> Devices
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="https://github.com/bodokaiser/houston">
-                <i className="fe fe-github"></i> Source
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="https://godoc.org/github.com/bodokaiser/houston">
-                <i className="fe fe-file-text"></i> Documentation
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </header>
 )
