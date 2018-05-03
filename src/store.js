@@ -23,4 +23,15 @@ const setupStore = (state) => {
   return store
 }
 
-export default setupStore()
+var store
+
+switch (process.env.NODE_ENV) {
+  case 'production':
+  store = setupStore(require('./state.prod.json'))
+  break
+  case 'development':
+  store = setupStore(require('./state.dev.json'))
+  break
+}
+
+export default store
