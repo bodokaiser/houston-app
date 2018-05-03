@@ -8,6 +8,7 @@ import {
   withRouter
 } from 'react-router-dom'
 import {connect} from 'react-redux'
+import Modal from 'react-modal'
 
 import Device from './device'
 

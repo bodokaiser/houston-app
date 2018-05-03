@@ -1,22 +1,9 @@
-import React, {
-  Component
-} from 'react'
-import {
-  LocalForm,
-  Fieldset,
-  actions
-} from 'react-redux-form'
+import React, { Component, Fragment } from 'react'
+import { LocalForm, Fieldset, actions } from 'react-redux-form'
 import {connect} from 'react-redux'
+import { isEmpty, isDecimal } from 'validator'
 
-import {
-  isEmpty,
-  isDecimal
-} from 'validator'
-
-import {
-  updateDevice,
-  submitDevice
-} from '../actions/device'
+import { updateDevice, submitDevice } from '../actions/device'
 
 import {
   InputGroup,
@@ -25,16 +12,9 @@ import {
   SelectGroupOption,
   CheckboxGroup
 } from '../components/form/group'
-import {
-  TextInput,
-  RangeInput
-} from '../components/form/input'
-import {
-  SubmitButton
-} from '../components/form/button'
-import {
-  CollapsableCard
-} from '../components/card'
+import { SubmitButton } from '../components/form/button'
+import { CollapsableCard } from '../components/card'
+import { FormModal } from '../components/modal'
 
 const ConstGroup = ({ sourceUnit, defaultUnit }) => (
   <Fieldset model=".const">
@@ -113,12 +93,37 @@ const ModeGroup = () => (
   </SelectGroup>
 )
 
+const NameModal = ({ open, onClose, onSave }) => (
+  <FormModal title="Change Name" model=".name" open={open} onClose={onClose} onSave={onSave}>
+    <div className="form-group col-sm-12">
+      <label className="form-label">
+        Name
+      </label>
+      <InputGroup model=".name" validators={{ required }} updateOn="change" />
+    </div>
+  </FormModal>
+)
+
 class Device extends Component {
 
   constructor(props) {
     super(props)
 
-    this.state = {}
+    this.state = { showModal: false }
+    this.handleEdit = this.handleEdit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.handleModalClose = this.handleModalClose.bind(this)
+  }
+
+  handleEdit() {
+    this.setState({ showModal: true })
+  }
+
+  handleModalClose() {
+    console.log('modal close')
+    this.setState({ showModal: false })
   }
 
   handleSubmit() {
@@ -132,18 +137,19 @@ class Device extends Component {
   }
 
   handleUpdate(form) {
+    console.log('update', form)
     this.setState({ form })
   }
 
   render() {
     const { device } = this.props
-    const { form } = this.state
+    const { form, showModal } = this.state
 
     var alert = form && form.$form.errors.mode &&
       'You can only use one sweep and one playback at a time.'
 
     return (
-      <CollapsableCard title={device.name} alert={alert}>
+      <CollapsableCard title={device.name} alert={alert} onEdit={this.handleEdit}>
         <LocalForm
           initialState={device}
           validators={{
@@ -151,9 +157,10 @@ class Device extends Component {
               mode: modes()
             }
           }}
-          onUpdate={form => this.handleUpdate(form)}
-          onSubmit={device => this.handleSubmit(device)}
-          onChange={device => this.handleChange(device)}>
+          onUpdate={this.handleUpdate}
+          onSubmit={this.handleSubmit}
+          onChange={this.handleChange}>
+          <NameModal open={showModal} onClose={this.handleModalClose} />
           <div className="card-body">
               <div className="form-row">
                 <div className="form-group col-sm-12">

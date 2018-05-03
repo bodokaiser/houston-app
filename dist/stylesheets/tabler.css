@@ -15154,7 +15154,6 @@ a.tag-addon:hover {
 
 .selectgroup-input:checked + .selectgroup-button {
   border-color: #467fcf;
-  z-index: 1;
   color: #467fcf;
   background: #edf2fa;
 }

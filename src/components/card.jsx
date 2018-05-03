@@ -15,10 +15,15 @@ export class CollapsableCard extends Component {
     super()
 
     this.state = { collapsed: false }
-    this.toggleCollapse = this.toggleCollapse.bind(this)
+    this.handleEditClick = this.handleEditClick.bind(this)
+    this.handleCollapseClick = this.handleCollapseClick.bind(this)
   }
 
-  toggleCollapse() {
+  handleEditClick() {
+    if (this.props.onEdit) this.props.onEdit()
+  }
+
+  handleCollapseClick() {
     const { collapsed } = this.state
 
     this.setState({ collapsed: !collapsed })
@@ -34,11 +39,11 @@ export class CollapsableCard extends Component {
         <div className="card-header">
           <h3 className="card-title">{title}</h3>
           <div className="card-options">
-            <button className="btn btn-sm" type="click">
+            <button className="btn btn-sm" type="click" onClick={this.handleEditClick}>
               <i className="fe fe-edit-2"></i>
             </button>
             <span className="card-options-collapse">
-              <button className="btn btn-sm" type="click" onClick={this.toggleCollapse}>
+              <button className="btn btn-sm" type="click" onClick={this.handleCollapseClick}>
                 <i className={`fe fe-chevron-${(collapsed) ? 'down' : 'up'}`}></i>
               </button>
             </span>
