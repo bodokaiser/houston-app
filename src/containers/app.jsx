@@ -30,6 +30,10 @@ class App extends Component {
     this.handleKeypress = this.handleKeypress.bind(this)
   }
 
+  componentDidMount() {
+    this.props.dispatch(fetchDevicesLazy())
+  }
+
   handleKeypress(e) {
     if (e.key == 'ä') {
       this.props.dispatch(notify({

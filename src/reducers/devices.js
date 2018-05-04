@@ -20,7 +20,7 @@ function requestDeviceList(state, action) {
 }
 
 function receiveDeviceList(state, action) {
-  return state
+  return action.devices
 }
 
 function requestDeviceUpdate(state, action) {

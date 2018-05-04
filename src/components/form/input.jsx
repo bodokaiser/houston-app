@@ -8,9 +8,13 @@ const classNameSelect = classNameMapper('selectgroup-input')
 const classNameCustom = classNameMapper('custom-control-input')
 const classNameControl = classNameMapper('form-control')
 
-export const TextInput = (props) => (
-  <Control.text mapProps={{ className: classNameControl }} {...props} />
-)
+export const TextInput = (props) => {
+  props.mapProps.className = classNameControl
+
+  return (
+    <Control.text {...props} />
+  )
+}
 
 export const QuantityInput = ({ model, validators, sourceUnit, defaultUnit }) => (
   <Control

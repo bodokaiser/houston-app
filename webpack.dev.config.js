@@ -18,7 +18,8 @@ module.exports = merge(config, {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development'
+      NODE_ENV: 'development',
+      RESOURCE: '',
     })
   ],
 })

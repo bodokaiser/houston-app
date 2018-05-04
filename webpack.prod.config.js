@@ -9,7 +9,8 @@ module.exports = merge(config, {
   entry: './src/index.jsx',
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
+      RESOURCE: 'http://localhost:8000'
     })
   ],
 })

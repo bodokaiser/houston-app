@@ -33,9 +33,9 @@ export function receiveDeviceUpdate() {
 
 export function resetDevice(device) {
   return dispatch => {
-    console.log('reset', device)
-
-    return axios.delete(`/devices/dds/${device.id}`)
+    return axios.delete(`/devices/dds/${device.id}`, null, {
+        baseURL: process.env.RESOURCE
+      })
       .then(res => {
         dispatch(notify({
           title: `Reset ${device.name}`,
@@ -61,28 +61,21 @@ export function submitDevice(device) {
   return dispatch => {
     dispatch(requestDeviceUpdate(device))
 
-    return axios.put(`/devices/dds/${device.id}`, {
-        id: device.id,
-        name: device.name,
-        amplitude: device.amplitude / 100,
-        frequency: device.frequency * 1e6,
-        phase: device.phase
-      }, { baseURL: process.env.RESOURCE })
+    return axios.put(`/devices/dds/${device.id}`, device,
+      { baseURL: process.env.RESOURCE })
       .then(res => {
         dispatch(notify({
-          title: `Updated ${device.name}`,
-          message: 'Device update was successful',
+          title: `Updated ${device.name}!`,
+          message: 'Device update was successful.',
           status: res.status,
-          dismissible: true,
           dismissAfter: 3000
         }))
       })
       .catch(err => {
         dispatch(notify({
-          title: `Reset ${device.name}`,
-          message: `Device went wrong. ${err.message}`,
+          title: `Failed to update ${device.name}!`,
+          message: `${err.message}. ${err.response.data.message}.`,
           status: 'error',
-          dismissible: true,
           dismissAfter: 3000
         }))
       })

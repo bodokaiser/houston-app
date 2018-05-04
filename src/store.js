@@ -25,13 +25,12 @@ const setupStore = (state) => {
 
 var store
 
-switch (process.env.NODE_ENV) {
-  case 'production':
-  store = setupStore(require('./state.prod.json'))
-  break
-  case 'development':
-  store = setupStore(require('./state.dev.json'))
-  break
+console.log('resource', process.env.RESOURCE)
+
+if (process.env.NODE_ENV == 'production' || process.env.RESOURCE) {
+  store = setupStore()
+} else {
+  store = setupStore(require('./state.json'))
 }
 
 export default store

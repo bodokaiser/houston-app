@@ -35,14 +35,14 @@ const SweepGroup = ({ sourceUnit, defaultUnit }) => (
     <div className="row gutters-xs">
       <div className="col-4">
         <QuantityGroup
-          model=".start"
+          model=".limits[0]"
           sourceUnit={sourceUnit}
           defaultUnit={defaultUnit}
           validators={{ required, quantity }} />
       </div>
       <div className="col-4">
         <QuantityGroup
-          model=".stop"
+          model=".limits[1]"
           sourceUnit={sourceUnit}
           defaultUnit={defaultUnit}
           validators={{ required, quantity }} />
@@ -56,19 +56,11 @@ const SweepGroup = ({ sourceUnit, defaultUnit }) => (
       </div>
     </div>
     <div className="mt-3">
-      <CheckboxGroup model=".noDwellLow" label="Hold Low" />
-      <CheckboxGroup model=".noDwellHigh" label="Hold High" />
+      <CheckboxGroup model=".nodwells[0]" label="No Dwell Low" />
+      <CheckboxGroup model=".nodwells[1]" label="No Dwell High" />
     </div>
   </Fieldset>
 )
-
-function parseList(value) {
-  if (Array.isArray(value)) {
-    return value.join(', ')
-  }
-
-  return value
-}
 
 const PlaybackGroup = ({ sourceUnit, defaultUnit }) => (
   <Fieldset model=".playback">
@@ -76,8 +68,13 @@ const PlaybackGroup = ({ sourceUnit, defaultUnit }) => (
       <div className="col-7">
         <InputGroup
           model=".data"
-          parser={parseList}
-          updateOn="blur"
+          mapProps={{
+            value: ({ value }) => {
+              if (Array.isArray(value)) return value.join(', ')
+
+              return value
+            }
+          }}
           validators={{ required }} />
       </div>
       <div className="col-5">
@@ -89,8 +86,8 @@ const PlaybackGroup = ({ sourceUnit, defaultUnit }) => (
       </div>
     </div>
     <div className="mt-3">
-      <CheckboxGroup model=".noDwellLow" label="Hold Low" />
-      <CheckboxGroup model=".noDwellHigh" label="Hold High" />
+      <CheckboxGroup model=".trigger" label="Trigger" />
+      <CheckboxGroup model=".duplex" label="Duplex" />
     </div>
   </Fieldset>
 )
@@ -137,7 +134,47 @@ class Device extends Component {
   }
 
   handleSubmit() {
-    this.props.dispatch(submitDevice(this.props.device))
+    const { device } = this.props
+
+    function stringToFloatArray(str) {
+      if (typeof str != 'string') return []
+
+      return str.split(',').map(s => parseFloat(s))
+    }
+
+    // TODO: this should be handled by a custom control in the form
+    // see https://github.com/davidkpiano/react-redux-form/issues/1143.
+    this.props.dispatch(submitDevice({
+      id: device.id,
+      name: device.name,
+      amplitude: {
+        mode: device.amplitude.mode,
+        const: device.amplitude.const,
+        sweep: device.amplitude.sweep,
+        playback: {
+          ...device.amplitude.playback,
+          data: stringToFloatArray(device.amplitude.playback.data)
+        }
+      },
+      frequency: {
+        mode: device.frequency.mode,
+        const: device.frequency.const,
+        sweep: device.frequency.sweep,
+        playback: {
+          ...device.frequency.playback,
+          data: stringToFloatArray(device.frequency.playback.data)
+        }
+      },
+      phase: {
+        mode: device.phase.mode,
+        const: device.phase.const,
+        sweep: device.phase.sweep,
+        playback: {
+          ...device.phase.playback,
+          data: stringToFloatArray(device.phase.playback.data)
+        }
+      }
+    }))
   }
 
   handleChange(device) {
