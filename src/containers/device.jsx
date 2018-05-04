@@ -106,7 +106,7 @@ const NameModal = ({ open, onClose, onSave }) => (
       <label className="form-label">
         Name
       </label>
-      <InputGroup model=".name" validators={{ required }} updateOn="change" />
+      <InputGroup model=".name" updateOn="blur" validators={{ required }} />
     </div>
   </FormModal>
 )

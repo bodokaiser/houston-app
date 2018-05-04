@@ -8,7 +8,7 @@ import {
 
 function updateDevice(state, action) {
   return state.map(device => {
-    if (device.name == action.device.name) {
+    if (device.id == action.device.id) {
       device = action.device
     }
     return device

@@ -18,7 +18,7 @@ export const FormModal = ({ title, model, open, children, onClose, onSave }) => 
         { children }
       </div>
       <div className="modal-footer">
-        <Control.reset model={model} className="btn btn-secondary" onClick={onClose}>Close</Control.reset>
+        <Control.reset model={model} className="btn btn-secondary">Reset</Control.reset>
         <button type="click" className="btn btn-primary" onClick={onClose}>Change</button>
       </div>
     </div>
