@@ -10,7 +10,8 @@ module.exports = merge(config, {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
-      RESOURCE: 'http://localhost:8000'
+      PORT: '6200',
+      STATE: null
     })
   ],
 })

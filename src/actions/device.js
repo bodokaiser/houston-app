@@ -1,5 +1,8 @@
 import axios from 'axios'
+import parse from 'url-parse'
 import { notify } from 'reapop'
+
+const BASEURL = parse().set('port', process.env.PORT || 80).toString()
 
 export const UPDATE_DEVICE = 'UPDATE_DEVICE'
 export const REQUEST_DEVICE_LIST = 'REQUEST_DEVICE_LIST'
@@ -34,7 +37,7 @@ export function receiveDeviceUpdate() {
 export function resetDevice(device) {
   return dispatch => {
     return axios.delete(`/devices/dds/${device.id}`, null, {
-        baseURL: process.env.RESOURCE
+        baseURL: BASEURL
       })
       .then(res => {
         dispatch(notify({
@@ -61,8 +64,9 @@ export function submitDevice(device) {
   return dispatch => {
     dispatch(requestDeviceUpdate(device))
 
-    return axios.put(`/devices/dds/${device.id}`, device,
-      { baseURL: process.env.RESOURCE })
+    return axios.put(`/devices/dds/${device.id}`, device, {
+        baseURL: BASEURL
+      })
       .then(res => {
         dispatch(notify({
           title: `Updated ${device.name}!`,
@@ -87,7 +91,7 @@ export function fetchDevices() {
     dispatch(requestDeviceList())
 
     return axios.get('/devices/dds', {
-        baseURL: process.env.RESOURCE
+        baseURL: BASEURL
       })
       .then(res => dispatch(receiveDeviceList(res.data)))
       .catch(err => dispatch(receiveDeviceList([])))

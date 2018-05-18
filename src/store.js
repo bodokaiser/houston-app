@@ -27,10 +27,10 @@ var store
 
 console.log('resource', process.env.RESOURCE)
 
-if (process.env.NODE_ENV == 'production' || process.env.RESOURCE) {
-  store = setupStore()
+if (!!process.env.STATE) {
+  store = setupStore(require(process.env.STATE))
 } else {
-  store = setupStore(require('./state.json'))
+  store = setupStore()
 }
 
 export default store

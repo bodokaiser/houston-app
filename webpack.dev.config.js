@@ -19,7 +19,8 @@ module.exports = merge(config, {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
-      RESOURCE: '',
+      STATE: null,
+      PORT: '8000'
     })
   ],
 })
