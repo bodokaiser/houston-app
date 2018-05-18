@@ -74,12 +74,12 @@ const PlaybackGroup = ({ sourceUnit, defaultUnit }) => (
 
               return value
             }
-          }}
-          validators={{ required }} />
+          }} />
       </div>
       <div className="col-5">
         <QuantityGroup
           model=".interval"
+
           sourceUnit="s"
           defaultUnit="ns"
           validators={{ required, quantity }} />
